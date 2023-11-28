@@ -87,7 +87,7 @@ rule fetch_whitelist:
     conda:
         "envs/fetch.yaml"
     shell:
-        "curl --no-progress-meter -L {params.url} | zcat | {params.rc_command} | "
+        "curl --no-progress-meter -L '{params.url}' | zcat | {params.rc_command} | "
         "sed -e 's/^/{params.prefix}/' -e 's/$/{params.suffix}/' > {output}"
 
 rule fetch_genome:
