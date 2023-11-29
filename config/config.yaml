@@ -72,6 +72,10 @@ whitelist_revcomp: True
 bc_prefix: ''
 bc_suffix: ''
 
+# Alternatively, for the bwt2 aligner setting, specify an offset in the barcode read where the "true" barcode begins. 
+# Note this is ignored for aligner=chromap
+bc_offset: 0
+
 #######
 # Aligner Settings
 #######
