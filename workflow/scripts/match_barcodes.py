@@ -8,7 +8,7 @@ def read_barcodes(path):
 
     return bc
 
-def match_bc(fastqs, whitelist, max_barcode_dist, fastq1_out_path, fastq2_out_path, qc_path, threads):
+def match_bc(fastqs, whitelist, max_barcode_dist, bc_offset, fastq1_out_path, fastq2_out_path, qc_path, threads):
     f = matcha.FastqReader(threads = threads)
     f.add_sequence("R1", fastqs["R1"], output_path=fastq1_out_path)
     f.add_sequence("R2", fastqs["R2"])
@@ -21,7 +21,7 @@ def match_bc(fastqs, whitelist, max_barcode_dist, fastq1_out_path, fastq2_out_pa
         max_mismatches=max_barcode_dist,
         subsequence_count=2
     )
-    f.add_barcode("cell", cell_barcode, "R2")
+    f.add_barcode("cell", cell_barcode, "R2", match_start=bc_offset)
     f.set_output_names("{read_name} CB:Z:{cell}")
 
     barcode_counts = np.zeros(max_barcode_dist + 2, int)
@@ -54,6 +54,7 @@ def match_bc(fastqs, whitelist, max_barcode_dist, fastq1_out_path, fastq2_out_pa
 
 try:
     max_barcode_dist = snakemake.params['barcode_dist']
+    bc_offset = snakemake.params['bc_offset']
 
     fastq1_out_path = snakemake.output['fastq1_bc']
     fastq2_out_path = snakemake.output['fastq2_bc']
@@ -70,7 +71,7 @@ try:
 
     whitelist = snakemake.input["whitelist"]
 
-    match_bc(fastqs, whitelist, max_barcode_dist, fastq1_out_path, fastq2_out_path, qc_path, threads)
+    match_bc(fastqs, whitelist, max_barcode_dist, bc_offset, fastq1_out_path, fastq2_out_path, qc_path, threads)
 
 except NameError:
     pass
